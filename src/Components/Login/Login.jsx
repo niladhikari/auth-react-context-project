@@ -1,15 +1,42 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from "../../Providers/AuthProvider";
 
 const Login = () => {
    const [showPassword, setShowPassword] = useState(false);
+   const {signInUser,signINGoogle} = useContext(AuthContext);
+   const navigate = useNavigate()
    const handleLogin = (e)=>{
      e.preventDefault()
      const email = e.target.email.value;
      const password = e.target.password.value;
      console.log(email,password);
+
+    //add validation user
+    signInUser(email,password)
+    .then((result) => {
+      console.log(result.user)
+      e.target.reset()
+      navigate('/')
+    })
+    .catch((error) => {
+      console.error(error);
+    });
    }
+   
+  const handleGoogleSignIn = (e)=>{
+    signINGoogle()
+    .then((result) => {
+      console.log(result.user)
+      e.target.reset()
+      navigate('/')
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+    
+  }
 
   return (
     <div className="m-auto grid justify-center items-center hero min-h-screen bg-base-200 ">
@@ -75,6 +102,10 @@ const Login = () => {
           >
             Register
           </Link>
+        </p>
+        <p className="text-center mb-3">
+        <button onClick={handleGoogleSignIn}
+        className="btn btn-active btn-ghost text-center ">Ghost</button>
         </p>
       </div>
     </div>
